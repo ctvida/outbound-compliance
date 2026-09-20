@@ -1,3 +1,11 @@
 __pycache__/
 *.egg-info/
 .venv/
+
+# Local agent controls, deliberately unpublished. This repo is public and the
+# guardrail hook carries absolute home paths, the operator's repo-scope file and
+# dated notes about a private system, none of which belong in a public tree. It
+# protects the machine editing this library, not anyone installing it, so it is
+# installed locally and ignored here. The private repos that carry the same hook
+# commit it.
+.claude/
