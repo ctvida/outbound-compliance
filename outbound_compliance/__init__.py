@@ -69,26 +69,34 @@ def is_opt_out(text: str | None) -> bool:
     return bool(OPT_OUT.search(text or ""))
 
 
-def is_suppressed(email: str | None, rows: list[dict[str, Any]]) -> bool:
-    """True if the address, or its domain, appears in the suppression rows.
+def is_suppressed(
+    email: str | None,
+    rows: list[dict[str, Any]],
+    *,
+    domain: str | None = None,
+) -> bool:
+    """True if the address, or a domain of its, appears in the suppression rows.
 
     Rows are `{"kind": "email"|"domain", "value": ...}`. Callers pass their own
-    query's output, so each engine keeps its own store.
+    query's output, so each engine keeps its own store. `domain` is an extra
+    domain to test beside the one in the address: an engine that knows the
+    account a contact belongs to suppresses the whole account that way, even
+    when the person's address is at some other domain.
     ponytail: linear over the rows. Suppression lists are in the hundreds; index
     the query, not this function, if one ever gets large.
     """
     email = (email or "").lower()
-    if not email:
+    domains = {(domain or "").lower(), email.rpartition("@")[2]} - {""}
+    if not email and not domains:
         return False
-    domain = email.split("@", 1)[1] if "@" in email else ""
 
     for row in rows:
         value = str(row.get("value") or "").lower()
         if not value:
             continue
         kind = row.get("kind")
-        if kind == "email" and value == email:
+        if kind == "email" and email and value == email:
             return True
-        if kind == "domain" and domain and value == domain:
+        if kind == "domain" and value in domains:
             return True
     return False

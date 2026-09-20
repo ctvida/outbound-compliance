@@ -84,3 +84,9 @@ def test_ordinary_replies_are_not_opt_outs(text: str) -> None:
 
 def test_the_cap_is_a_number_both_engines_read_rather_than_define() -> None:
     assert DAILY_SEND_CAP == 25
+
+
+def test_an_account_domain_suppresses_a_contact_whose_address_is_elsewhere() -> None:
+    assert is_suppressed("dana@gmail.com", ROWS, domain="blocked.com") is True
+    assert is_suppressed("dana@gmail.com", ROWS, domain="allowed.com") is False
+    assert is_suppressed(None, ROWS, domain="BLOCKED.com") is True
