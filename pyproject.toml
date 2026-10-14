@@ -1,6 +1,6 @@
 [project]
 name = "outbound-compliance"
-version = "0.1.0"
+version = "0.1.1"
 description = "The CAN-SPAM footer, opt-out rule, suppression rule and daily send cap, once."
 requires-python = ">=3.11"
 dependencies = []

@@ -45,7 +45,17 @@ If you'd rather not hear from me, just reply "unsubscribe" and I won't email aga
 
 IDENTITY_FIELDS = ("name", "title", "company", "postal_address")
 
-OPT_OUT = re.compile(r"\b(unsubscribe|remove me|opt[ -]?out|stop emailing)\b", re.IGNORECASE)
+# ponytail: a phrase list, not a classifier. It errs toward suppressing, so
+# "don't follow up until March" counts as an opt-out. Widen it when a real
+# reply slips through; sales-engine docs/spikes/laya/ holds the test set.
+OPT_OUT = re.compile(
+    r"\b(unsubscribe|remove me|remove my (address|email)|take me off|opt[ -]?out"
+    r"|stop (emailing|contacting|messaging|reaching out|sending)"
+    r"|(do not|don['\u2019]?t) (contact|email|message|follow up|reach out)"
+    r"|report(ing)? (this|it|you) (as|for) spam)\b"
+    r"|^\W*stop\W*$",
+    re.IGNORECASE,
+)
 
 
 def footer(identity: Mapping[str, Any]) -> str:
