@@ -68,7 +68,15 @@ def test_suppression_survives_junk_input() -> None:
 @pytest.mark.parametrize(
     "text",
     ["please unsubscribe me", "REMOVE ME from this list", "opt-out", "opt out",
-     "stop emailing me", "Unsubscribe."],
+     "stop emailing me", "Unsubscribe.",
+     # The ten opt-outs from sales-engine's Laya spike (docs/spikes/laya/); v0.1.0 missed seven.
+     "Please remove me from your list.", "Unsubscribe", "Stop emailing me.",
+     "Not interested. Please don't contact me again.",
+     "Take me off whatever list this is. We don't buy from cold outreach.",
+     "This is the third message. If I get another one I'm reporting it as spam.",
+     "No thanks, and please do not follow up.", "I never signed up for this. Remove my address.",
+     "Hi, appreciate the effort, but please stop reaching out. Best of luck.", "STOP",
+     "stop.", "Don’t email me again"],
 )
 def test_opt_out_phrases_are_recognised(text: str) -> None:
     assert is_opt_out(text) is True
@@ -76,7 +84,11 @@ def test_opt_out_phrases_are_recognised(text: str) -> None:
 
 @pytest.mark.parametrize(
     "text",
-    ["sure, let's talk", "", "I'd like to stop by your office", "unsubscribed him already?"],
+    ["sure, let's talk", "", "I'd like to stop by your office", "unsubscribed him already?",
+     "Can you call me tomorrow at 10?", "Too busy this month. Ping me after the holidays.",
+     "Thanks. Not looking at anything like this at the moment.",
+     "We just signed a two-year contract with another vendor, so not for now.",
+     "Stop by the front desk when you visit.", "Let me think about it and get back to you."],
 )
 def test_ordinary_replies_are_not_opt_outs(text: str) -> None:
     assert is_opt_out(text) is False
